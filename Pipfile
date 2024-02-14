@@ -6,6 +6,10 @@ name = "pypi"
 [packages]
 django = "*"
 django-environ = "*"
+mysqlclient = "==2.1.1"
+djoser = "*"
+djangorestframework = "*"
+django-filter = "*"
 
 [dev-packages]
 
