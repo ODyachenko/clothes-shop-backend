@@ -10,6 +10,7 @@ mysqlclient = "==2.1.1"
 djoser = "*"
 djangorestframework = "*"
 django-filter = "*"
+pillow = "*"
 
 [dev-packages]
 
