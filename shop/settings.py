@@ -22,6 +22,12 @@ SECRET_KEY = env('SECRET_KEY')
 DEBUG = env('DEBUG')
 
 ALLOWED_HOSTS = ['*']
+CORS_ORIGIN_ALLOW_ALL = True
+
+# ALLOWED_HOSTS=['http://localhost:5000']
+# CORS_ORIGIN_ALLOW_ALL = False
+# CORS_ORIGIN_WHITELIST = ('http://localhost:5000',)
+
 
 
 # Application definition
@@ -33,11 +39,12 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'users',
     'rest_framework',
     'rest_framework.authtoken',
     'djoser',
     'django_filters',
-    'users',
+    'corsheaders',
     'products',
 ]
 
@@ -49,6 +56,8 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    "corsheaders.middleware.CorsMiddleware",
+    "django.middleware.common.CommonMiddleware",
 ]
 
 ROOT_URLCONF = 'shop.urls'
@@ -129,7 +138,9 @@ STATIC_URL = 'static/'
 # STATICFILES_DIRS = (BASE_DIR  + '/' + 'static',)
 
 MEDIA_URL = 'media/'
-# MEDIA_ROOT = BASE_DIR  + '/' + 'media'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+# STATICFILES_DIRS = [os.path.join(BASE_DIR, 'build/static')]
+# STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.0/ref/settings/#default-auto-field
@@ -156,9 +167,13 @@ REST_FRAMEWORK = {
         'rest_framework.throttling.UserRateThrottle',
     ],
     'DEFAULT_THROTTLE_RATES': {
-        'anon': '5/minute',
-        'user': '10/minute',
+        'anon': '50/minute',
+        'user': '50/minute',
     }
 }
+# AUTH_USER_MODEL = 'users.User'
 
-DJOSER={"USER_ID_FIELD":"username"}
+DJOSER={
+    # 'USER_MODEL': 'users.User',
+    'USER_ID_FIELD': 'username',
+}
