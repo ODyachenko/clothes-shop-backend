@@ -25,11 +25,19 @@ class ProductSize(models.Model):
         return self.value
 
 
+class Discount(models.Model):
+    value = models.PositiveIntegerField()
+
+    def __str__(self):
+        return f'{self.value}%'
+
+
 class Product(models.Model):
     name = models.CharField(max_length=250)
     description = models.TextField(max_length=400)
     details = models.TextField(max_length=1500, null=True)
     price = models.DecimalField(max_digits=6, decimal_places=2)
+    discount = models.ForeignKey(Discount, on_delete=models.CASCADE, null=True)
     inventory = models.PositiveSmallIntegerField()
     category = models.ForeignKey(Category, on_delete=models.PROTECT)
     colors = models.ManyToManyField(ProductColor, related_name='colors_list')

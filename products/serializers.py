@@ -1,12 +1,17 @@
 from rest_framework import serializers
 from .models import Category, Product, Review, ProductSize, ProductImage, Cart, ProductColor
 from django.contrib.auth.models import User
-# from users.models import User
+from djoser.serializers import UserCreateSerializer
 
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         fields = ['id', 'first_name', 'last_name']
+
+class UserRegistrationSerializer(UserCreateSerializer):
+    class Meta(UserCreateSerializer.Meta):
+        fields = ('id', 'first_name', 'last_name', 'username', 'email', 'password',)
+
 
 class CategorySerializer(serializers.ModelSerializer):
     class Meta:
@@ -35,20 +40,22 @@ class ProductSerializer(serializers.ModelSerializer):
     sizes = ProductSizeSerializer(many=True)
     colors = ProductColorSerializer(many=True)
     reviews = serializers.SerializerMethodField()
-    category = CategorySerializer()
+    category = serializers.SerializerMethodField()
     details = serializers.SerializerMethodField()
+    discount = serializers.SerializerMethodField()
 
     class Meta:
         model = Product
-        fields = ['id', 'name', 'description', 'details', 'category', 'price', 'inventory', 'images', 'sizes', 'colors', 'on_sale', 'rating', 'reviews', 'create_at']
+        fields = ['id', 'name', 'description', 'details', 'category','discount', 'price', 'inventory', 'images', 'sizes', 'colors', 'on_sale', 'rating', 'reviews', 'create_at']
+
+    def get_category(self, obj):
+        return obj.category.name
+
+    def get_discount(self, obj):
+        return obj.discount.value if obj.discount else 0
 
     def get_details(self, obj):
-        if obj.details:
-            details = obj.details.split('\r\n')
-            # details = obj.details
-            return details
-        return []
-
+        return obj.details.split('\r\n') if obj.details else []
 
     def get_rating(self, obj):
         reviews = Review.objects.filter(product=obj)
@@ -59,6 +66,7 @@ class ProductSerializer(serializers.ModelSerializer):
         reviews = Review.objects.filter(product=obj)
         serializer = ReviewSerializer(reviews, many=True)
         return serializer.data
+
    
     def create(self, validated_data):
         images_data = self.context.get('request').FILES.getlist('images')
