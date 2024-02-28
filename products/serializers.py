@@ -1,17 +1,32 @@
 from rest_framework import serializers
 from .models import Category, Product, Review, ProductSize, ProductImage, Cart, ProductColor
 from django.contrib.auth.models import User
-from djoser.serializers import UserCreateSerializer
+from djoser.serializers import UserCreateSerializer, TokenSerializer
 
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         fields = ['id', 'first_name', 'last_name']
 
-class UserRegistrationSerializer(UserCreateSerializer):
-    class Meta(UserCreateSerializer.Meta):
-        fields = ('id', 'first_name', 'last_name', 'username', 'email', 'password',)
+# class UserRegistrationSerializer(UserCreateSerializer):
+#     class Meta(UserCreateSerializer.Meta):
+#         fields = ('id', 'first_name', 'last_name', 'username', 'email', 'password',)
 
+
+# class CustomTokenSerializer(TokenSerializer):
+#     user_info = serializers.SerializerMethodField()
+
+#     def get_user_info(self, obj):
+#         user = obj.user
+#         return {
+#             'first_name': user.first_name,
+#             'last_name': user.last_name,
+#             'username': user.username,
+#             'email': user.email,
+#         }
+
+#     class Meta(TokenSerializer.Meta):
+#         fields = ('auth_token', 'user_info')
 
 class CategorySerializer(serializers.ModelSerializer):
     class Meta:

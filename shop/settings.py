@@ -133,18 +133,13 @@ USE_TZ = True
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.0/howto/static-files/
-
 STATIC_URL = 'static/'
-# STATICFILES_DIRS = (BASE_DIR  + '/' + 'static',)
 
 MEDIA_URL = 'media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
-# STATICFILES_DIRS = [os.path.join(BASE_DIR, 'build/static')]
-# STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.0/ref/settings/#default-auto-field
-
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 REST_FRAMEWORK = {
@@ -157,7 +152,7 @@ REST_FRAMEWORK = {
         'rest_framework.filters.OrderingFilter',
         'rest_framework.filters.SearchFilter',
     ],
-    'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination','PAGE_SIZE': 6,
+    'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination','PAGE_SIZE': 20,
     'DEFAULT_AUTHENTICATION_CLASSES': (
         'rest_framework.authentication.TokenAuthentication',
         'rest_framework.authentication.SessionAuthentication',
@@ -171,12 +166,14 @@ REST_FRAMEWORK = {
         'user': '50/minute',
     }
 }
-# AUTH_USER_MODEL = 'users.User'
+# AUTH_USER_MODEL = 'users.UserAccount'
 
 DJOSER={
-    # 'USER_MODEL': 'users.User',
-    'SERIALIZERS': {
-        'user_create': 'products.serializers.UserRegistrationSerializer'
-    },
+    'LOGIN_FIELD': 'email',
+    # 'SET_PASSWORD_RETYPE': True,
+    # 'SERIALIZERS': {
+    #     'user_create': 'products.serializers.UserRegistrationSerializer'
+    # },
     'USER_ID_FIELD': 'username',
+    
 }

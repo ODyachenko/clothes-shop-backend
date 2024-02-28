@@ -1,14 +1,25 @@
 from rest_framework import generics, permissions, status
 from rest_framework.response import Response
-from .models import Category, Product, Review, Cart
-from .serializers import CategorySerializer, ProductSerializer, ReviewSerializer, CartSerializer
+from djoser.views import TokenCreateView
+from .models import Category, Product, Review, Cart, ProductColor
+from .serializers import CategorySerializer, ProductSerializer, ReviewSerializer, CartSerializer, ProductColorSerializer
 from .paginations import ProductsPaginations
+from .filters import CustomProductFilter
 
 # Create your views here.
+# class CustomTokenCreateView(TokenCreateView):
+#     serializer_class = CustomTokenSerializer
+
+
 class CategoriesView(generics.ListCreateAPIView):
     queryset = Category.objects.all()
     serializer_class = CategorySerializer
     permission_classes = [permissions.IsAuthenticatedOrReadOnly]
+
+
+class ColorsView(generics.ListAPIView):
+    queryset = ProductColor.objects.all()
+    serializer_class = ProductColorSerializer
 
 
 class SingleCategoryView(generics.RetrieveUpdateDestroyAPIView):
@@ -22,6 +33,7 @@ class ProductsView(generics.ListCreateAPIView):
     serializer_class = ProductSerializer
     permission_classes = [permissions.IsAuthenticatedOrReadOnly]
     pagination_class = ProductsPaginations
+    filterset_class = CustomProductFilter
 
     ordering_fields = ['price', 'rating', 'create_at']
     filterset_fields = ['category', 'price', 'colors', 'sizes', 'on_sale']
