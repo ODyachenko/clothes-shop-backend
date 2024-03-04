@@ -1,6 +1,4 @@
 from django.db import models
-from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin, BaseUserManager
-
 # Create your models here.
 # class UserAccountManager(BaseUserManager):
 #     def create_user(self, first_name, last_name, email, passwword=None):
@@ -36,3 +34,7 @@ from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin, BaseU
 
 #     def __str__(self):
 #         return self.email
+
+# class CustomUser(AbstractUser):
+#     age = models.PositiveSmallIntegerField()
+#     bio = models.TextField(max_length=500)

@@ -4,7 +4,7 @@ from .models import Product
 class ProductFilter(django_filters.FilterSet):
     class Meta:
         model = Product
-        fields = ['category', 'price', 'colors', 'sizes', 'on_sale']
+        fields = ['category', 'brand', 'colors', 'sizes', 'on_sale']
 
 class CustomProductFilter(ProductFilter):
     min_price = django_filters.NumberFilter(field_name='price', lookup_expr='gte')

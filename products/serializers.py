@@ -1,37 +1,17 @@
 from rest_framework import serializers
-from .models import Category, Product, Review, ProductSize, ProductImage, Cart, ProductColor
+from .models import Category, Product, Review, ProductSize, ProductImage, Cart, ProductColor, Brand
+from users.serializers import UserSerializer
 from django.contrib.auth.models import User
-from djoser.serializers import UserCreateSerializer, TokenSerializer
-
-class UserSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = User
-        fields = ['id', 'first_name', 'last_name']
-
-# class UserRegistrationSerializer(UserCreateSerializer):
-#     class Meta(UserCreateSerializer.Meta):
-#         fields = ('id', 'first_name', 'last_name', 'username', 'email', 'password',)
-
-
-# class CustomTokenSerializer(TokenSerializer):
-#     user_info = serializers.SerializerMethodField()
-
-#     def get_user_info(self, obj):
-#         user = obj.user
-#         return {
-#             'first_name': user.first_name,
-#             'last_name': user.last_name,
-#             'username': user.username,
-#             'email': user.email,
-#         }
-
-#     class Meta(TokenSerializer.Meta):
-#         fields = ('auth_token', 'user_info')
 
 class CategorySerializer(serializers.ModelSerializer):
     class Meta:
         model = Category
         fields = ['id', 'name']
+
+class BrandSerializer(serializers.ModelSerializer):
+    class Meta: 
+        model = Brand
+        fields = ['id', 'name', 'logo']
 
 class ProductImageSerializer(serializers.ModelSerializer):
     class Meta:
@@ -50,21 +30,29 @@ class ProductColorSerializer(serializers.ModelSerializer):
 
 
 class ProductSerializer(serializers.ModelSerializer):
+    brand = serializers.SerializerMethodField(required=False)
     rating = serializers.SerializerMethodField(read_only=True)
     images = ProductImageSerializer(many=True, required=False)
     sizes = ProductSizeSerializer(many=True)
     colors = ProductColorSerializer(many=True)
     reviews = serializers.SerializerMethodField()
     category = serializers.SerializerMethodField()
+    dress_style = serializers.SerializerMethodField()
     details = serializers.SerializerMethodField()
     discount = serializers.SerializerMethodField()
 
     class Meta:
         model = Product
-        fields = ['id', 'name', 'description', 'details', 'category','discount', 'price', 'inventory', 'images', 'sizes', 'colors', 'on_sale', 'rating', 'reviews', 'create_at']
+        fields = ['id', 'name', 'brand', 'description', 'details', 'category', 'dress_style', 'discount', 'price', 'inventory', 'images', 'sizes', 'colors', 'on_sale', 'rating', 'reviews', 'create_at']
 
     def get_category(self, obj):
         return obj.category.name
+
+    def get_brand(self, obj):
+        return obj.brand.name if obj.brand else ''
+
+    def get_dress_style(self, obj):
+        return obj.dress_style.name
 
     def get_discount(self, obj):
         return obj.discount.value if obj.discount else 0
@@ -108,24 +96,36 @@ class ReviewSerializer(serializers.ModelSerializer):
         model = Review
         fields = ['id', 'user', 'product', 'rating', 'text', 'create_at']
     
-    # def create(self, validated_data):
-    #     validated_data['user'] = self.context['request'].user
-    #     return super().create(validated_data)
+    def create(self, validated_data):
+        validated_data['user'] = self.context['request'].user
+        return super().create(validated_data)
 
 
 class CartSerializer(serializers.ModelSerializer):
     user = serializers.PrimaryKeyRelatedField(
-        queryset = User.objects.all(),
-        default = serializers.CurrentUserDefault()
+        queryset=User.objects.all(),
+        default=serializers.CurrentUserDefault()
     )
-    
-    def validate(self, attrs):
-        attrs['total_price'] = attrs['quantity'] * attrs['unit_price']
-        return attrs
-    
+    productItemId = serializers.PrimaryKeyRelatedField(
+        queryset=Product.objects.all(),
+        write_only=True,
+        source='productItem'
+    )
+    productItem = ProductSerializer(read_only=True)
+
+    def create(self, validated_data):
+        product_item_id = validated_data.pop('productItem').id  # Get the ID of the product item
+        product_item = Product.objects.get(pk=product_item_id)
+
+        cart_item = Cart.objects.create(
+            productItem=product_item,
+            **validated_data
+        )
+        return cart_item
+
     class Meta:
         model = Cart
-        fields = ['id', 'quantity', 'unit_price', 'total_price', 'productItem', 'user', 'create_at']
+        fields = ['id', 'quantity', 'color', 'size', 'unit_price', 'total_price', 'productItem', 'productItemId', 'user', 'create_at']
 
         extra_kwargs = {
             'total_price': {'read_only': True}

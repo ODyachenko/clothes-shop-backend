@@ -166,14 +166,17 @@ REST_FRAMEWORK = {
         'user': '50/minute',
     }
 }
-# AUTH_USER_MODEL = 'users.UserAccount'
+# AUTH_USER_MODEL = 'users.CustomUser'
 
 DJOSER={
     'LOGIN_FIELD': 'email',
     # 'SET_PASSWORD_RETYPE': True,
-    # 'SERIALIZERS': {
-    #     'user_create': 'products.serializers.UserRegistrationSerializer'
-    # },
+    'SERIALIZERS': {
+        'user_create': 'products.serializers.UserRegistrationSerializer',
+        # 'user': 'accounts.serializers.UserCreateSerializer',
+        # 'current_user': 'accounts.serializers.UserCreateSerializer',
+        # 'user_delete': 'djoser.serializers.UserDeleteSerializer',
+    },
     'USER_ID_FIELD': 'username',
     
 }

@@ -1,21 +1,19 @@
 from rest_framework import generics, permissions, status
 from rest_framework.response import Response
-from djoser.views import TokenCreateView
-from .models import Category, Product, Review, Cart, ProductColor
-from .serializers import CategorySerializer, ProductSerializer, ReviewSerializer, CartSerializer, ProductColorSerializer
+from .models import Category, Product, Review, Cart, ProductColor, Brand
+from .serializers import CategorySerializer, ProductSerializer, ReviewSerializer, CartSerializer, ProductColorSerializer, BrandSerializer
 from .paginations import ProductsPaginations
 from .filters import CustomProductFilter
 
 # Create your views here.
-# class CustomTokenCreateView(TokenCreateView):
-#     serializer_class = CustomTokenSerializer
-
-
 class CategoriesView(generics.ListCreateAPIView):
     queryset = Category.objects.all()
     serializer_class = CategorySerializer
     permission_classes = [permissions.IsAuthenticatedOrReadOnly]
 
+class BrandsView(generics.ListAPIView):
+    queryset = Brand.objects.all()
+    serializer_class = BrandSerializer
 
 class ColorsView(generics.ListAPIView):
     queryset = ProductColor.objects.all()
@@ -36,7 +34,6 @@ class ProductsView(generics.ListCreateAPIView):
     filterset_class = CustomProductFilter
 
     ordering_fields = ['price', 'rating', 'create_at']
-    filterset_fields = ['category', 'price', 'colors', 'sizes', 'on_sale']
     search_fields = ['title']
 
 
@@ -54,6 +51,11 @@ class ReviewsView(generics.ListCreateAPIView):
     ordering_fields = ['rating', 'create_at']
     filterset_fields = ['rating']
 
+class SingleReviewView(generics.RetrieveUpdateDestroyAPIView):
+    queryset = Review
+    serializer_class = ReviewSerializer
+    permission_classes = [permissions.IsAuthenticated]
+
 class CartItemsView(generics.ListCreateAPIView):
     queryset = Cart
     serializer_class = CartSerializer
@@ -70,3 +72,4 @@ class SingleCartItemView(generics.RetrieveUpdateDestroyAPIView):
     queryset = Cart
     serializer_class = CartSerializer
     permission_classes = [permissions.IsAuthenticated]
+
