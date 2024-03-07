@@ -34,7 +34,7 @@ class ProductsView(generics.ListCreateAPIView):
     filterset_class = CustomProductFilter
 
     ordering_fields = ['price', 'rating', 'create_at']
-    search_fields = ['title']
+    search_fields = ['name']
 
 
 class SingleProductView(generics.RetrieveUpdateAPIView):

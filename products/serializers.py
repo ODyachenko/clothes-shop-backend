@@ -1,6 +1,6 @@
 from rest_framework import serializers
 from .models import Category, Product, Review, ProductSize, ProductImage, Cart, ProductColor, Brand
-from users.serializers import UserSerializer
+from users.serializers import ReviewAuthorSerializer
 from django.contrib.auth.models import User
 
 class CategorySerializer(serializers.ModelSerializer):
@@ -90,7 +90,7 @@ class ProductSerializer(serializers.ModelSerializer):
 
 
 class ReviewSerializer(serializers.ModelSerializer):
-    user = UserSerializer(read_only=True)
+    user = ReviewAuthorSerializer(read_only=True)
 
     class Meta:
         model = Review
