@@ -162,11 +162,10 @@ REST_FRAMEWORK = {
         'rest_framework.throttling.UserRateThrottle',
     ],
     'DEFAULT_THROTTLE_RATES': {
-        'anon': '50/minute',
+        'anon': '20/minute',
         'user': '50/minute',
     }
 }
-# AUTH_USER_MODEL = 'users.CustomUser'
 
 DJOSER={
     'LOGIN_FIELD': 'email',
