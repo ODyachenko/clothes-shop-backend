@@ -6,10 +6,9 @@ from .paginations import ProductsPaginations
 from .filters import CustomProductFilter
 
 # Create your views here.
-class CategoriesView(generics.ListCreateAPIView):
+class CategoriesView(generics.ListAPIView):
     queryset = Category.objects.all()
     serializer_class = CategorySerializer
-    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
 
 class BrandsView(generics.ListAPIView):
     queryset = Brand.objects.all()
@@ -19,28 +18,37 @@ class ColorsView(generics.ListAPIView):
     queryset = ProductColor.objects.all()
     serializer_class = ProductColorSerializer
 
-
 class SingleCategoryView(generics.RetrieveUpdateDestroyAPIView):
     queryset = Category.objects.all()
     serializer_class = CategorySerializer
-    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
+    permission_classes = [permissions.IsAdminUser]
 
 
 class ProductsView(generics.ListCreateAPIView):
     queryset = Product.objects.all()
     serializer_class = ProductSerializer
-    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
     pagination_class = ProductsPaginations
     filterset_class = CustomProductFilter
 
     ordering_fields = ['price', 'rating', 'create_at']
     search_fields = ['name']
 
+    def get_permissions(self):
+        permission_classes = []
+        if self.request.method != 'GET':
+            permission_classes = [permissions.IsAdminUser] 
+        return [permission() for permission in permission_classes]
 
-class SingleProductView(generics.RetrieveUpdateAPIView):
+
+class SingleProductView(generics.RetrieveUpdateDestroyAPIView):
     queryset = Product.objects.all()
     serializer_class = ProductSerializer
-    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
+    
+    def get_permissions(self):
+        permission_classes = []
+        if self.request.method != 'GET':
+            permission_classes = [permissions.IsAdminUser] 
+        return [permission() for permission in permission_classes]
 
 
 class ReviewsView(generics.ListCreateAPIView):
