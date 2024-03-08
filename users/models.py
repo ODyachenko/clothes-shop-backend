@@ -1,8 +1,17 @@
 from django.db import models
-from django.contrib.auth.models import AbstractUser
+from django.contrib.auth.models import User
 
 # Create your models here.
-class User(AbstractUser):
-    image = models.ImageField(upload_to='users_avatars', null=True, blank=True)
-    first_name = models.CharField(max_length=150)
-    last_name = models.CharField(max_length=150)
+class Profile(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    street_address = models.CharField(max_length=100, default='')
+    city = models.CharField(max_length=100, default='')
+    state = models.CharField(max_length=100, default='')
+    zip_code = models.CharField(max_length=5, default='')
+    name = models.CharField(max_length=100, default='')
+    number = models.CharField(max_length=16, default='')
+    cvc = models.CharField(max_length=3, default='')
+    expiry = models.CharField(max_length=7, default='')
+
+    def __str__(self):
+        return self.user.username

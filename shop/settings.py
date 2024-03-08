@@ -1,31 +1,4 @@
-from pathlib import Path
-import environ
-import os
-
-env = environ.Env(
-    DEBUG=(bool, False)
-)
-
-# Build paths inside the project like this: BASE_DIR / 'subdir'.
-BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-
-# Take environment variables from .env file
-environ.Env.read_env(os.path.join(BASE_DIR, '.env'))
-
-# Quick-start development settings - unsuitable for production
-# See https://docs.djangoproject.com/en/5.0/howto/deployment/checklist/
-
-# SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = env('SECRET_KEY')
-
-# SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = env('DEBUG')
-
-ALLOWED_HOSTS = ['*']
-
-
 # Application definition
-
 INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
@@ -33,11 +6,13 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'users',
     'rest_framework',
     'rest_framework.authtoken',
     'djoser',
     'django_filters',
-    'users',
+    'corsheaders',
+    'products',
 ]
 
 MIDDLEWARE = [
@@ -48,6 +23,8 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    "corsheaders.middleware.CorsMiddleware",
+    "django.middleware.common.CommonMiddleware",
 ]
 
 ROOT_URLCONF = 'shop.urls'
@@ -69,25 +46,7 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = 'shop.wsgi.application'
-
-
-# Database
-# https://docs.djangoproject.com/en/5.0/ref/settings/#databases
-
-DATABASES = {  
-    'default': {  
-        'ENGINE': 'django.db.backends.mysql',  
-        'NAME': env('DB_NAME'),  
-        'USER': env('DB_USER'),  
-        'PASSWORD': env('DB_PASSWORD'),  
-        'HOST': env('DB_HOST'),  
-        'PORT': env('DB_PORT'),  
-        'OPTIONS': {  
-            'init_command': "SET sql_mode='STRICT_TRANS_TABLES'"  
-        }  
-    }  
-}
-
+# WSGI_APPLICATION = 'vercel_app.wsgi.app'
 
 
 # Password validation
@@ -121,18 +80,14 @@ USE_I18N = True
 USE_TZ = True
 
 
-# Static files (CSS, JavaScript, Images)
-# https://docs.djangoproject.com/en/5.0/howto/static-files/
 
 STATIC_URL = 'static/'
-# STATICFILES_DIRS = (BASE_DIR  + '/' + 'static',)
 
 MEDIA_URL = 'media/'
-# MEDIA_ROOT = BASE_DIR  + '/' + 'media'
+
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.0/ref/settings/#default-auto-field
-
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 REST_FRAMEWORK = {
@@ -145,7 +100,7 @@ REST_FRAMEWORK = {
         'rest_framework.filters.OrderingFilter',
         'rest_framework.filters.SearchFilter',
     ],
-    'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination','PAGE_SIZE': 6,
+    'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination','PAGE_SIZE': 20,
     'DEFAULT_AUTHENTICATION_CLASSES': (
         'rest_framework.authentication.TokenAuthentication',
         'rest_framework.authentication.SessionAuthentication',
@@ -155,9 +110,22 @@ REST_FRAMEWORK = {
         'rest_framework.throttling.UserRateThrottle',
     ],
     'DEFAULT_THROTTLE_RATES': {
-        'anon': '5/minute',
-        'user': '10/minute',
+        'anon': '20/minute',
+        'user': '50/minute',
     }
 }
 
-DJOSER={"USER_ID_FIELD":"username"}
+DJOSER={
+    'LOGIN_FIELD': 'email',
+    'SERIALIZERS': {
+        'user_create': 'products.serializers.UserRegistrationSerializer',
+    },
+    'USER_ID_FIELD': 'username',
+    
+}
+
+
+try:
+    from .local_settings import *
+except ImportError:
+    from .prod_settings import *
