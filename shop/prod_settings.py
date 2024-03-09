@@ -11,7 +11,7 @@ SECRET_KEY = env('PROD_SECRET_KEY')
 
 DEBUG = env('DEBUG')
 
-ALLOWED_HOSTS = ['127.0.0.1', '.vercel.app']
+ALLOWED_HOSTS = ['.vercel.app', '.now.sh']
 
 CORS_ORIGIN_ALLOW_ALL = True
 
