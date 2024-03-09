@@ -12,6 +12,8 @@ djangorestframework = "*"
 django-filter = "*"
 django-cors-headers = "*"
 pillow = "*"
+pymysql = "*"
+dj-database-url = "*"
 
 [dev-packages]
 
