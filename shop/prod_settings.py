@@ -12,9 +12,7 @@ SECRET_KEY = env('PROD_SECRET_KEY')
 
 DEBUG = env('DEBUG')
 
-ALLOWED_HOSTS = ['.vercel.app', '.now.sh', 'localhost']
-
-CORS_ORIGIN_ALLOW_ALL = True
+ALLOWED_HOSTS = ['.vercel.app', '.now.sh', 'localhost', '*']
 
 DATABASES = {  
     'default': {  
