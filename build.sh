@@ -2,6 +2,7 @@
 
 # Build the project
 echo "Building the project..."
+pipenv shell
 python3.9 -m pipenv install -r requirements.txt
 
 echo "Make Migration..."
