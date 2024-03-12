@@ -12,8 +12,10 @@ django-filter = "*"
 django-cors-headers = "*"
 pillow = "*"
 psycopg2-binary = "*"
-pymysql = "*"
 dj-database-url = "*"
+gunicorn = "*"
+whitenoise = "*"
+pymysql = "*"
 
 [dev-packages]
 
