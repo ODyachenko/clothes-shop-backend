@@ -12,7 +12,7 @@ SECRET_KEY = env('SECRET_KEY')
 
 DEBUG = env('DEBUG')
 
-ALLOWED_HOSTS = ['.vercel.app', '.herokuapp']
+ALLOWED_HOSTS = ['.vercel.app', '.herokuapp.com']
 
 DATABASES = {
     'default': dj_database_url.config(
