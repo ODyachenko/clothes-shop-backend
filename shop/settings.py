@@ -90,11 +90,11 @@ MEDIA_URL = 'media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
 
-# CORS_ORIGIN_ALLOW_ALL = True
-CORS_ALLOWED_ORIGINS = [
-    'https://clothes-shop-frontend-c0b9js0ry-odyachenko.vercel.app',
-    # Add any other origins that you want to allow here
-]
+CORS_ORIGIN_ALLOW_ALL = True
+# CORS_ALLOWED_ORIGINS = [
+#     'https://clothes-shop-frontend-c0b9js0ry-odyachenko.vercel.app',
+#     # Add any other origins that you want to allow here
+# ]
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.0/ref/settings/#default-auto-field
