@@ -1,7 +1,6 @@
 from djoser.serializers import UserCreateSerializer, UserSerializer
 from rest_framework import serializers
 from django.contrib.auth.models import User
-from users.models import Profile
 
 class UserRegistrationSerializer(UserCreateSerializer):
     class Meta(UserCreateSerializer.Meta):
